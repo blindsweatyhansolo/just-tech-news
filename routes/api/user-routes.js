@@ -53,6 +53,37 @@ router.post('/', (req, res) => {
       });
 });
 
+// POST route for login (POST is the standard for the login thats in process)
+// POST method carries the request parameter in req.body which makes it a more secure way of transferring
+// data from the  client to the server, unlike a GET request (carries the req.param appended to the url string)
+router.post('/login', (req, res) => {
+    // expects {email: 'value', password: 'value'}
+    // use entered email as parameter for findOne() method
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+      .then(dbUserData => {
+          // if email is invalid / doesn't exist then respond with 404 not found
+          if (!dbUserData) {
+              res.status(404).json({ message: 'No user with that email address!'});
+              return;
+          }
+
+          // verify user
+          const validPassword = dbUserData.checkPassword(req.body.password);
+
+          if (!validPassword) {
+              res.status(400).json({ message: 'Incorrect password!' });
+              return;
+          }
+
+          res.json({ user: dbUserData, message: 'You are now logged in.' });
+
+      });
+});
+
 // PUT [update] /api/users/1
 router.put('/:id', (req, res) => {
     // update() combines params for creating and looking up data
