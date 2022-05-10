@@ -60,6 +60,8 @@ router.put('/:id', (req, res) => {
     // UPDATE users SET username = "Lernantino", email = "lernantino@gmail.com", password = "newPassword1234" WHERE id = 1
     // if req.body has exact key/value pairs to match the model, you can just use req.body
     User.update(req.body, {
+        // { individualHooks: true } must be declared when using bcrypt's hashing functions
+        individualHooks: true,
         where: {
             id: req.params.id
         }

@@ -2,6 +2,8 @@
 const { Model, DataTypes } = require('sequelize');
 // import sequelize module from connection.js
 const sequelize = require('../config/connection');
+// require bcrypt for hashing passwords
+const bcrypt = require('bcrypt');
 
 // create our User model extending from sequelize's Model class
 class User extends Model {}
@@ -49,6 +51,24 @@ User.init(
         }
     },
     {
+        // hook placement is vital! Here it fires just before a new instance of User is CREATED or UPDATED
+        hooks: {
+            // set up beforeCreate lifecycle "hook" functionality
+            // ASYNC - used to prefix to the function that contains the asynchronous function
+            // AWAIT - can be used to prefix the async function, which assigns the value from the response
+            // then newUserData object is returned with a hashed password property
+            async beforeCreate(newUserData) {
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            },
+            // set up beforeUpdate lifecycle "hook" functionality
+            // when using beforeUpdate, add the {individualHooks: true} option in subsequent PUT route
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+        },
+
         // TABLE CONFIGURATION OPTIONS
         // pass in imported sequelize connection (direct connection to our db)
         sequelize,
