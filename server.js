@@ -15,7 +15,8 @@ app.use(routes);
 // TURN ON CONNECTION TO DB AND SERVER
 // sequelize.sync() method establishes connection to db, taking the models and connecting them to the associated db tables
 // if it doesn't find a table, Sequelize will create it
-// {force: false} means db tables will NOT be dropped and recreated on start-up 
+// {force: false} means db tables will NOT be dropped and recreated on start-up
+// {force: true} will drop/re-create the tables on start-up, which will update any association changes
 sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => console.log('Now listening'));
 });
