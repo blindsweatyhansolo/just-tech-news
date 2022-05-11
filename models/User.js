@@ -84,7 +84,8 @@ User.init(
         freezeTableName: true,
         // use underscores insted of camel-casing
         underscored: true,
-        // model name stays lowercase in the db
+        // model name stays lowercase in the db - TABLE NAME
+        // automatically becomes plural if freezetablename: false
         modelName: 'user'
     }
 );
