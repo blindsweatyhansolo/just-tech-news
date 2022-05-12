@@ -1,12 +1,13 @@
 const router = require('express').Router();
-const { json } = require('express/lib/response');
 const sequelize = require('../../config/connection');
-const { Post, User, Vote } = require('../../models');
+const { Post, User, Vote, Comment } = require('../../models');
 
 // GET all posts
 router.get('/', (req, res) => {
     console.log('===================');
     Post.findAll({
+        // organizes the data based on newest using created_at's timestamp
+        order: [['created_at', 'DESC']],
         // array of attributes to return from query from Post model
         attributes: [
             'id', 
@@ -18,11 +19,17 @@ router.get('/', (req, res) => {
                 'vote_count'
             ]
         ],
-        // organizes the data based on newest using created_at's timestamp
-        order: [['created_at', 'DESC']],
         // (JOIN) INCLUDE property expressed as object that 
-        // references a Model (user) and its defined attributes (username)
+        // references a Model (user / comment) and its defined attributes
         include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
             {
                 model: User,
                 attributes: ['username']
@@ -54,6 +61,14 @@ router.get('/:id', (req, res) => {
             ]
         ],
         include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
             {
                 model: User,
                 attributes: ['username']
