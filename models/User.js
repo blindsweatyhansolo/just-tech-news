@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 
 // create our User model extending from sequelize's Model class
 class User extends Model {
+    // INSTANCE METHOD
     // set up method to run on instance data (per user) to check password
     // NOTE: async is recommended over this sync method
     checkPassword(loginPw) {
