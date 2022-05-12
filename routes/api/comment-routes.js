@@ -3,21 +3,21 @@ const { Comment, User, Post } = require('../../models');
 
 // GET all comments
 router.get('/', (req, res) => {
-    Comment.findAll({
-        attributes: [
-            'id',
-            'user_id',
-            'post_id',
-            'comment_text'
-        ],
-        order: [['created_at', 'DESC']],
-        include: [
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
-    })
+    Comment.findAll(
+        // attributes: [
+        //     'id',
+        //     'user_id',
+        //     'post_id',
+        //     'comment_text'
+        // ],
+        // order: [['created_at', 'DESC']],
+        // include: [
+        //     {
+        //         model: User,
+        //         attributes: ['username']
+        //     }
+        // ]
+    )
       .then(dbCommentData => res.json(dbCommentData))
       .catch(err => {
           console.log(err);
