@@ -1,14 +1,14 @@
 // MIDDLEMAN FILE TO COLLECT PACKAGED API ROUTES FROM ROUTES/API/INDEX.JS
-const router = require('express').Router();
+const router = require("express").Router();
 
-const apiRoutes = require('./api');
+const apiRoutes = require("./api");
 
 // prefixes /api to all API paths collected in routes/api/index.js
-router.use('/api', apiRoutes);
+router.use("/api", apiRoutes);
 
 // in case of request to non-existant endpoint, send 404 error (RESTful practice)
 router.use((req, res) => {
-    res.status(404).end();
+  res.status(404).end();
 });
 
 module.exports = router;
