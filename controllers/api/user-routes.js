@@ -62,13 +62,23 @@ router.get('/:id', (req, res) => {
 // POST [create] /api/users
 router.post('/', (req, res) => {
     // create() is equivalent to SQL's INSERT INTO users (username, email, password) VALUES ('Lerantino', 'learntino@gmail.com', 'password1234')
-    // expects {username: 'Lerantino', email: 'learntino@gmail.com', password: 'password1234'}
     User.create({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
     })
-      .then(dbUserData => res.json(dbUserData))
+      .then(dbUserData => {
+          // give server easy access to user's user_id/username and Boolean value for login status
+          // make sure session is created BEFORE sending response back (req.session.save() method
+          // initiates creation of session, then runs callback function)
+          req.session.save(() => {
+              req.session.user_id = dbUserData.id;
+              req.session.username = dbUserData.username;
+              req.session.loggedIn = true;
+
+              res.json(dbUserData);
+          })
+      })
       .catch(err => {
           console.log(err);
           res.status(500).json(err);
@@ -101,9 +111,28 @@ router.post('/login', (req, res) => {
               return;
           }
 
-          res.json({ user: dbUserData, message: 'You are now logged in.' });
+          req.session.save(() => {
+              // declare session variables
+              req.session.user_id = dbUserData.id;
+              req.session.username = dbUserData.username;
+              req.session.loggedIn = true;
 
+              res.json({ user: dbUserData, message: 'You are now logged in!' });
+          });
       });
+});
+
+// LOGOUT route for destroying session
+router.post('/logout', (req, res) => {
+    // check for session, destoy keyword will end active session
+    if (req.session.loggedIn) {
+        req.session.destroy(() => {
+            // successful destroy status code (204 NO CONTENT)
+            res.status(204).end();
+        });
+    } else {
+        res.status(404).end();
+    }
 });
 
 // PUT [update] /api/users/1
@@ -153,6 +182,7 @@ router.delete('/:id', (req, res) =>{
           res.status(500).json(err);
       });
 });
+
 
 
 module.exports = router;

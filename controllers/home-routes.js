@@ -3,9 +3,10 @@ const router = require('express').Router();
 const sequelize = require('../config/connection');
 const {Post, User, Comment, Vote } = require('../models');
 
-
+// root route
 router.get('/', (req, res) => {
-    console.log('========================');
+    console.log(req.session);
+
     Post.findAll({
         attributes: [
             'id',
@@ -32,7 +33,7 @@ router.get('/', (req, res) => {
     .then(dbPostData => {
         // get({ plain: true }) - sequelize method to serialize data in object
         const posts = dbPostData.map(post => post.get({ plain: true }));
-        
+
         // res.render used to specify which template to use (first arg: homepage.handlebars)
         // can accept an object that includes all the data to be passed into the template
         res.render('homepage', { posts });
@@ -41,6 +42,17 @@ router.get('/', (req, res) => {
         console.log(err);
         res.status(500).json(err);
     });
+});
+
+// login/signup route
+router.get('/login', (req, res) => {
+    // check for session, redirect to homepage if exists
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('login');
 });
 
 module.exports = router;
