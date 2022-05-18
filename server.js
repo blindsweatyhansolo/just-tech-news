@@ -1,15 +1,46 @@
-const express = require("express");
-const routes = require("./routes");
-const sequelize = require("./config/connection");
+const path = require('path');
+const express = require('express');
+const session = require('express-session');
+const exphbs = require('express-handlebars');
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// express-session set up
+// sets up Express.js session, connects the session to Sequelize DB
+const sequelize = require('./config/connection');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const sess = {
+    // secret gets replaced by an actual secret stored in .env file
+    secret: 'Super Secret Secret',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize
+    })
+};
+
+app.use(session(sess));
+
+// import helpers
+const helpers = require('./utils/helpers');
+
+// handlebars set up
+const hbs = exphbs.create({ helpers });
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
 // MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // TURN ON ROUTES
+const routes = require('./controllers');
 app.use(routes);
 
 // TURN ON CONNECTION TO DB AND SERVER

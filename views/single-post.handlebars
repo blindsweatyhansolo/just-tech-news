@@ -1,0 +1,25 @@
+{{!-- SINGLE POST PAGE --}}
+{{!-- PARTIAL > name of partial file / passed object --}}
+{{> post-info post }}
+
+{{#if loggedIn}}
+<form class="comment-form">
+    <div>
+        <textarea name="comment-body"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">ADD COMMENT</button>
+        <button type="button" class="upvote-btn">UPVOTE</button>
+    </div>
+</form>
+{{/if}}
+
+{{> comments post.comments }}
+
+{{!-- script tags for comment and upvote logic in /public  --}}
+{{!-- remember to link absolute path, not relative --}}
+{{#if loggedIn}}
+<script src="/javascript/comment.js"></script>
+<script src="/javascript/upvote.js"></script>
+{{/if}}

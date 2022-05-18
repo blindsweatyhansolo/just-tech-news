@@ -1,8 +1,12 @@
 // MIDDLEMAN FILE TO COLLECT PACKAGED API ROUTES FROM ROUTES/API/INDEX.JS
 const router = require("express").Router();
 
-const apiRoutes = require("./api");
+const apiRoutes = require('./api');
+const homeRoutes = require('./home-routes');
+const dashboardRoutes = require('./dashboard-routes');
 
+router.use('/', homeRoutes);
+router.use('/dashboard', dashboardRoutes);
 // prefixes /api to all API paths collected in routes/api/index.js
 router.use("/api", apiRoutes);
 

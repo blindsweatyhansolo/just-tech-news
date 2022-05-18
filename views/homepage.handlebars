@@ -1,0 +1,10 @@
+{{!-- HOMEPAGE --}}
+<ol class="'post-list">
+    {{#each posts as |post|}}
+    <li>
+        {{!-- PARTIAL > name of partial file / passed object --}}
+        {{> post-info post }}
+    </li>
+    {{/each}}
+</ol>
+
