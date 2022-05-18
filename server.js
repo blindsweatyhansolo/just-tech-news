@@ -25,8 +25,11 @@ const sess = {
 
 app.use(session(sess));
 
+// import helpers
+const helpers = require('./utils/helpers');
+
 // handlebars set up
-const hbs = exphbs.create({});
+const hbs = exphbs.create({ helpers });
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
